@@ -1,35 +1,20 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { fetchServices } from '../api/serviceApi';
-import type { ServiceConfig, ServiceOption } from '../data/services';
 import { services as defaultServices } from '../data/services';
 import './Admin.css';
 
-type QuoteItem = {
-  id: string;
-  title: string;
-  info: string;
-  total: number;
-};
-
-type QuoteData = {
-  items: QuoteItem[];
-  total: number;
-  salon: string;
-  clientName: string;
-};
-
 const Admin = () => {
-  const [services, setServices] = useState<ServiceConfig[]>([]);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [quoteExists, setQuoteExists] = useState(false);
-  const [storedQuote, setStoredQuote] = useState<QuoteData | null>(null);
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-  const [expandedQuoteItems, setExpandedQuoteItems] = useState<Record<string, boolean>>({});
-  const [savedQuotes, setSavedQuotes] = useState<any[]>([]);
+  const [storedQuote, setStoredQuote] = useState(null);
+  const [collapsed, setCollapsed] = useState({});
+  const [expandedQuoteItems, setExpandedQuoteItems] = useState({});
+  const [savedQuotes, setSavedQuotes] = useState([]);
   const [loadingSavedQuotes, setLoadingSavedQuotes] = useState(false);
-  const [quoteDetailsOpen, setQuoteDetailsOpen] = useState<Record<string, boolean>>({});
+  const [quoteDetailsOpen, setQuoteDetailsOpen] = useState({});
   const [newService, setNewService] = useState({
     title: '',
     description: '',
@@ -48,7 +33,7 @@ const Admin = () => {
 
     const storedQuoteText = localStorage.getItem('djQuote');
     if (storedQuoteText) {
-      const quoteData: QuoteData = JSON.parse(storedQuoteText);
+      const quoteData = JSON.parse(storedQuoteText);
       setQuoteExists(true);
       setStoredQuote(quoteData);
     }
@@ -68,39 +53,39 @@ const Admin = () => {
       if (!res.ok) throw new Error('Falha ao buscar orçamentos');
       const data = await res.json();
       setSavedQuotes(data);
-    } catch (err: any) {
+    } catch (err) {
       setMessage('Backend indisponível no GitHub Pages. Orçamentos salvos localmente não podem ser carregados.');
     } finally {
       setLoadingSavedQuotes(false);
     }
   };
 
-  const toggleQuoteDetails = (id: string) => {
+  const toggleQuoteDetails = (id) => {
     setQuoteDetailsOpen(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleDeleteQuote = async (id: string) => {
+  const handleDeleteQuote = async (id) => {
     if (!window.confirm('Confirma exclusão deste orçamento?')) return;
     setMessage('Backend indisponível no GitHub Pages. Exclusão de orçamentos remotos não é suportada.');
   };
 
-  const toggleQuoteItem = (itemId: string) => {
+  const toggleQuoteItem = (itemId) => {
     setExpandedQuoteItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
   };
 
-  const handleChange = (id: string, field: keyof ServiceConfig, value: any) => {
+  const handleChange = (id, field, value) => {
     setServices(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
   };
 
-  const handleOptionChange = (serviceId: string, optionIndex: number, field: 'label' | 'description' | 'price', value: string | number) => {
+  const handleOptionChange = (serviceId, optionIndex, field, value) => {
     setServices(prev => prev.map(service => {
       if (service.id !== serviceId || !service.options) {
         return service;
       }
 
-      const updatedOption: ServiceOption = field === 'price'
-        ? { ...service.options![optionIndex], price: Number(value) }
-        : { ...service.options![optionIndex], [field]: String(value) };
+      const updatedOption = field === 'price'
+        ? { ...service.options[optionIndex], price: Number(value) }
+        : { ...service.options[optionIndex], [field]: String(value) };
 
       return {
         ...service,
@@ -109,32 +94,32 @@ const Admin = () => {
     }));
   };
 
-  const handleAddOption = (serviceId: string) => {
+  const handleAddOption = (serviceId) => {
     setServices(prev => prev.map(service => service.id === serviceId ? {
       ...service,
       options: [...(service.options || []), { label: 'Novo pacote', description: 'Descreva o pacote', price: 0 }]
     } : service));
   };
 
-  const handleRemoveOption = (serviceId: string, optionIndex: number) => {
+  const handleRemoveOption = (serviceId, optionIndex) => {
     setServices(prev => prev.map(service => service.id === serviceId ? {
       ...service,
       options: (service.options || []).filter((_, index) => index !== optionIndex)
     } : service));
   };
 
-  const handleUpdate = (service: ServiceConfig) => {
+  const handleUpdate = (service) => {
     setServices(prev => prev.map(item => item.id === service.id ? service : item));
     setMessage(`Serviço ${service.title} atualizado localmente. Backend não disponível no GitHub Pages.`);
   };
 
   const handleAddService = () => {
-    const created: ServiceConfig = {
+    const created = {
       ...newService,
       id: `${newService.title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
       values: newService.values.split(',').map(value => Number(value.trim())),
       editable: true
-    } as ServiceConfig;
+    };
     setServices(prev => [...prev, created]);
     setMessage(`Serviço ${created.title} adicionado localmente. Backend não disponível no GitHub Pages.`);
     setNewService({ title: '', description: '', rateLabel: 'Valor por hora', unitLabel: 'horas', basePrice: 0, values: '0,0', hourly: true });
@@ -335,7 +320,7 @@ const Admin = () => {
                         </div>
                         <div style={{ borderTop: '1px solid rgba(255, 184, 77, 0.2)', paddingTop: '12px' }}>
                           <h4 style={{ margin: '0 0 10px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.9)' }}>📦 Itens do Orçamento</h4>
-                          {(q.quote?.items || []).map((item: any) => (
+                          {(q.quote?.items || []).map((item) => (
                             <div key={item.id} style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                               <div style={{ fontWeight: '600', color: '#fff', marginBottom: '4px' }}>{item.title}</div>
                               <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', marginBottom: '4px' }}>{item.info}</div>

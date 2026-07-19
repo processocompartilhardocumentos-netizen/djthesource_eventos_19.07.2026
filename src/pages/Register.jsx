@@ -12,7 +12,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
 
@@ -30,7 +30,7 @@ const Register = () => {
       const client = await registerClient({ name, email, password });
       localStorage.setItem('djClient', JSON.stringify({ name: client.name, email: client.email }));
       navigate('/');
-    } catch (error: any) {
+    } catch (error) {
       setMessage(error.message || 'Falha ao cadastrar cliente.');
     }
   };

@@ -2,13 +2,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './Header.css';
 
-type ClientAuth = {
-  name: string;
-  email: string;
-};
-
 const Header = () => {
-  const [authClient, setAuthClient] = useState<ClientAuth | null>(null);
+  const [authClient, setAuthClient] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 

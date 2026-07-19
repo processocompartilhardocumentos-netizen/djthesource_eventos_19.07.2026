@@ -2,25 +2,8 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import './Quote.css';
 
-type QuoteItem = {
-  id: string;
-  title: string;
-  info: string;
-  total: number;
-};
-
-type QuoteData = {
-  items: QuoteItem[];
-  total: number;
-  salon: string;
-  clientName: string;
-  eventName: string;
-  clientEmail: string;
-  clientPhone: string;
-};
-
 const Quote = () => {
-  const [quote, setQuote] = useState<QuoteData>({
+  const [quote, setQuote] = useState({
     items: [],
     total: 0,
     salon: '',
@@ -52,8 +35,8 @@ const Quote = () => {
     }
   }, []);
 
-  const updateQuoteField = (field: keyof Omit<QuoteData, 'items' | 'total' | 'salon'>, value: string) => {
-    const next = { ...quote, [field]: value } as QuoteData;
+  const updateQuoteField = (field, value) => {
+    const next = { ...quote, [field]: value };
     setQuote(next);
     localStorage.setItem('djQuote', JSON.stringify(next));
   };
@@ -79,7 +62,7 @@ const Quote = () => {
       }
 
       setMessage('Orçamento enviado com sucesso ao organizador!');
-    } catch (error: any) {
+    } catch (error) {
       localStorage.setItem('djQuote', JSON.stringify({ ...quote, savedOffline: true }));
       setMessage('Servidor indisponível. Orçamento salvo localmente no navegador.');
     }

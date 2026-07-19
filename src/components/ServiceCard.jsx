@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ServiceConfig } from '../data/services';
 import './ServiceCard.css';
 
-type Props = {
-  service: ServiceConfig;
-};
-
-const ServiceCard = ({ service }: Props) => (
+const ServiceCard = ({ service }) => (
   <article className="service-card">
     <h3>{service.title}</h3>
     <p>{service.description}</p>

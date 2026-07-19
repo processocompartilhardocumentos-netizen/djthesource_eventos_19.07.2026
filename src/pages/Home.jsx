@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import ServiceCard from '../components/ServiceCard';
-import { services as defaultServices, ServiceConfig } from '../data/services';
+import { services as defaultServices } from '../data/services';
 import './Home.css';
 
 const Home = () => {
   const baseUrl = import.meta.env.BASE_URL;
-  const [services, setServices] = useState<ServiceConfig[]>(defaultServices);
+  const [services, setServices] = useState(defaultServices);
   const [loading, setLoading] = useState(true);
   const [showServices, setShowServices] = useState(false);
 

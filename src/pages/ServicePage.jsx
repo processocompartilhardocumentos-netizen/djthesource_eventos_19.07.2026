@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { ServiceConfig, services as defaultServices } from '../data/services';
+import { services as defaultServices } from '../data/services';
 import './ServicePage.css';
 
 const guestLabels = [100, 200, 300, 400];
 
 const ServicePage = () => {
   const baseUrl = import.meta.env.BASE_URL;
-  const { serviceId } = useParams<{ serviceId: string }>();
-  const [service, setService] = useState<ServiceConfig | undefined>();
+  const { serviceId } = useParams();
+  const [service, setService] = useState();
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(guestLabels[0]);
   const [priceIndex, setPriceIndex] = useState(0);
@@ -62,7 +62,7 @@ const ServicePage = () => {
   const selectedPrice = service.hourly && selectedOption ? selectedOption.price : service.values[priceIndex];
   const total = service.hourly ? selectedPrice * hours : selectedPrice;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const stored = localStorage.getItem('djQuote');
     const current = stored ? JSON.parse(stored) : { items: [], total: 0, salon: '', clientName: '', theme: '', address: '', eventStart: '', eventEnd: '' };
@@ -77,8 +77,8 @@ const ServicePage = () => {
 
     const next = {
       ...current,
-      items: [...current.items.filter((entry: any) => entry.id !== service.id), item],
-      total: Number((current.total - (current.items.find((entry: any) => entry.id === service.id)?.total || 0) + total).toFixed(2)),
+      items: [...current.items.filter(entry => entry.id !== service.id), item],
+      total: Number((current.total - (current.items.find(entry => entry.id === service.id)?.total || 0) + total).toFixed(2)),
       salon: service.id === 'salao' ? `${quantity} convidados` : current.salon,
       theme: service.id === 'salao' ? eventTheme : current.theme,
       address: service.id === 'salao' ? eventAddress : current.address,

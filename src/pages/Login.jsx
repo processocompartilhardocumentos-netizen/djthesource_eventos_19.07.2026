@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
 
@@ -23,7 +23,7 @@ const Login = () => {
       const client = await loginClient({ email, password });
       localStorage.setItem('djClient', JSON.stringify({ name: client.name, email: client.email }));
       navigate('/');
-    } catch (error: any) {
+    } catch (error) {
       setMessage(error.message || 'Falha no login.');
     }
   };
