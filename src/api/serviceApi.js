@@ -1,18 +1,17 @@
-import type { ServiceConfig } from '../data/services';
 import { services as defaultServices } from '../data/services';
 
 const STORAGE_KEY = 'djTheSourceServices';
 
-function getLocalServices(): ServiceConfig[] {
+function getLocalServices() {
   const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) as ServiceConfig[] : defaultServices;
+  return stored ? JSON.parse(stored) : defaultServices;
 }
 
-function saveLocalServices(services: ServiceConfig[]) {
+function saveLocalServices(services) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(services));
 }
 
-export async function fetchServices(): Promise<ServiceConfig[]> {
+export async function fetchServices() {
   try {
     const response = await fetch('/api/services');
     if (!response.ok) throw new Error('Falha ao buscar serviços');
@@ -22,7 +21,7 @@ export async function fetchServices(): Promise<ServiceConfig[]> {
   }
 }
 
-export async function fetchServiceById(id: string): Promise<ServiceConfig> {
+export async function fetchServiceById(id) {
   try {
     const response = await fetch(`/api/services/${id}`);
     if (!response.ok) throw new Error('Serviço não encontrado');
@@ -35,16 +34,16 @@ export async function fetchServiceById(id: string): Promise<ServiceConfig> {
   }
 }
 
-export async function updateService(service: Partial<ServiceConfig> & { id: string }) {
+export async function updateService(service) {
   const services = getLocalServices();
   const updated = services.map(item => item.id === service.id ? { ...item, ...service } : item);
-  saveLocalServices(updated as ServiceConfig[]);
-  return updated.find(item => item.id === service.id) as ServiceConfig;
+  saveLocalServices(updated);
+  return updated.find(item => item.id === service.id);
 }
 
-export async function addService(service: Omit<ServiceConfig, 'id' | 'editable'>) {
+export async function addService(service) {
   const services = getLocalServices();
-  const newService: ServiceConfig = {
+  const newService = {
     id: `${service.title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
     editable: true,
     ...service,

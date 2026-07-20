@@ -1,23 +1,4 @@
-export type ServiceOption = {
-  label: string;
-  description: string;
-  price: number;
-};
-
-export type ServiceConfig = {
-  id: string;
-  title: string;
-  description: string;
-  rateLabel: string;
-  unitLabel: string;
-  basePrice: number;
-  values: number[];
-  editable: boolean;
-  hourly: boolean;
-  options?: ServiceOption[];
-};
-
-export const services: ServiceConfig[] = [
+export const services = [
   {
     id: "sonorizacao",
     title: "Sonorização",
