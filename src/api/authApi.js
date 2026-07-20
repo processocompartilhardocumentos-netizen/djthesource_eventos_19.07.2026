@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'djTheSourceUsers';
+const STORAGE_KEY = "djTheSourceUsers";
 
 function getUsers() {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -11,8 +11,8 @@ function saveUsers(users) {
 
 export async function registerClient(payload) {
   const users = getUsers();
-  if (users.find(user => user.email === payload.email)) {
-    throw new Error('E-mail já cadastrado. Faça login ou use outro e-mail.');
+  if (users.find((user) => user.email === payload.email)) {
+    throw new Error("E-mail já cadastrado. Faça login ou use outro e-mail.");
   }
   users.push(payload);
   saveUsers(users);
@@ -21,9 +21,12 @@ export async function registerClient(payload) {
 
 export async function loginClient(payload) {
   const users = getUsers();
-  const user = users.find(user => user.email === payload.email && user.password === payload.password);
+  const user = users.find(
+    (user) =>
+      user.email === payload.email && user.password === payload.password,
+  );
   if (!user) {
-    throw new Error('E-mail ou senha incorretos.');
+    throw new Error("E-mail ou senha incorretos.");
   }
   return { name: user.name, email: user.email };
 }
