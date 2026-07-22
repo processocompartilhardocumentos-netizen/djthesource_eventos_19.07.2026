@@ -43,7 +43,7 @@ const Quote = () => {
 
   const sendQuote = async () => {
     try {
-      const response = await fetch('/api/events', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,8 +56,9 @@ const Quote = () => {
         })
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'Erro ao enviar orçamento');
       }
 

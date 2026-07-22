@@ -51,4 +51,18 @@ npm run dev
 
 ## Configuração de email
 
-Copie `.env.example` para `.env` em `server/` e ajuste as variáveis SMTP.
+Este projeto usa o serviço Resend para enviar os orçamentos via Vercel.
+
+1. Crie um arquivo `.env.local` na raiz do projeto.
+2. Adicione:
+
+```env
+RESEND_API_KEY=sua_chave_resend
+RESEND_FROM_EMAIL=Orcamento <seu-email@dominio.com>
+RESEND_TO_EMAIL=seu-email@dominio.com
+```
+
+3. No painel do Vercel, adicione estas mesmas variáveis em Environment Variables.
+4. Faça deploy novamente para que o endpoint `/api/send-email` passe a enviar os e-mails.
+
+> Se quiser, você também pode preencher o e-mail do organizador no formulário e o sistema enviará para esse endereço em vez do valor padrão de `RESEND_TO_EMAIL`.
