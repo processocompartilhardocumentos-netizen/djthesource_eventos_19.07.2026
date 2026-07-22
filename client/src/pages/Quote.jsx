@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import './Quote.css';
 
@@ -19,14 +19,31 @@ const Quote = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    const stored = localStorage.getItem('djQuote');
+    if (stored) {
+      const storedQuote = JSON.parse(stored);
+      setQuote({
+        items: storedQuote.items || [],
+        total: storedQuote.total || 0,
+        salon: storedQuote.salon || '',
+        clientName: storedQuote.clientName || '',
+        eventName: storedQuote.eventName || '',
+        clientEmail: storedQuote.clientEmail || '',
+        clientPhone: storedQuote.clientPhone || ''
+      });
+    }
+  }, []);
+
   const updateQuoteField = (field, value) => {
     const next = { ...quote, [field]: value };
     setQuote(next);
+    localStorage.setItem('djQuote', JSON.stringify(next));
   };
 
   const sendQuote = async () => {
     try {
-      const response = await fetch('/api/send-email', {
+      const response = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -39,9 +56,8 @@ const Quote = () => {
         })
       });
 
-      const data = await response.json().catch(() => ({}));
-
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data.error || 'Erro ao enviar orçamento');
       }
 
